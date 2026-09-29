@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Blog - SEIT2270</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#f8f9fa;color:#333}
+header{background:#1a1a2e;color:white;padding:20px;text-align:center}
+header h1{font-size:32px}
+header p{color:#aaa;margin-top:5px}
+nav{background:#16213e;padding:12px;text-align:center}
+nav button{background:transparent;color:white;border:1px solid #fff;padding:8px 20px;margin:0 5px;border-radius:20px;cursor:pointer}
+nav button.active,nav button:hover{background:#e94560;border-color:#e94560}
+.container{max-width:800px;margin:20px auto;padding:0 15px}
+.card{background:white;padding:20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:20px}
+.card h3{color:#1a1a2e;margin-bottom:10px}
+.card .date{color:#888;font-size:13px;margin-bottom:10px}
+.card p{line-height:1.6}
+input,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-size:15px}
+textarea{height:120px;resize:vertical}
+.btn{background:#e94560;color:white;border:none;padding:12px 30px;border-radius:25px;cursor:pointer;font-size:16px}
+.btn:hover{background:#c73e54}
+#home,#create,#about{display:none}
+#home.active,#create.active,#about.active{display:block}
+.delete-btn{background:#dc3545;color:white;border:none;padding:5px 15px;border-radius:5px;cursor:pointer;margin-top:10px;font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>📝 My Blog</h1>
+<p>Web Application Development - SEIT2270 Final Submission</p>
+</header>
+
+<nav>
+<button id="btn-home" class="active" onclick="showPage('home')">Home</button>
+<button id="btn-create" onclick="showPage('create')">Write Blog</button>
+<button id="btn-about" onclick="showPage('about')">About</button>
+</nav>
+
+<div class="container">
+
+<!-- HOME PAGE -->
+<div id="home" class="active">
+<div id="posts"></div>
+</div>
+
+<!-- CREATE PAGE -->
+<div id="create">
+<div class="card">
+<h3>Write New Blog Post</h3>
+<input type="text" id="title" placeholder="Blog Title...">
+<textarea id="content" placeholder="Write your blog content here..."></textarea>
+<button class="btn" onclick="addPost()">Publish Post</button>
+</div>
+</div>
+
+<!-- ABOUT PAGE -->
+<div id="about">
+<div class="card">
+<h3>About Me</h3>
+<p><b>Name:</b>Pala Kevenya Priya</p>
+<p><b>Enrollment No:</b> 25SE02ML313</p>
+<p><b>Subject:</b> SEIT2270 - Web Application Development</p>
+<p style="margin-top:10px">This blogging website is built using HTML, CSS and JavaScript as part of final submission. No backend used. Posts are saved in browser local storage.</p>
+</div>
+</div>
+
+</div>
+
+<script>
+let posts = JSON.parse(localStorage.getItem('myblogs')) || [
+{title:"Welcome to My Blog", content:"This is my first blog post created for SEIT2270 Web Application Development final submission. This website is built using HTML, CSS and JavaScript.", date:new Date().toLocaleDateString()}
+];
+
+function showPage(page){
+document.getElementById('home').classList.remove('active');
+document.getElementById('create').classList.remove('active');
+document.getElementById('about').classList.remove('active');
+document.getElementById('btn-home').classList.remove('active');
+document.getElementById('btn-create').classList.remove('active');
+document.getElementById('btn-about').classList.remove('active');
+document.getElementById(page).classList.add('active');
+document.getElementById('btn-'+page).classList.add('active');
+}
+
+function displayPosts(){
+let html = "";
+if(posts.length==0) html = "<div class='card'><p>No posts yet. Write your first blog!</p></div>";
+posts.forEach((p,i)=>{
+html += `<div class="card"><h3>${p.title}</h3><div class="date">${p.date}</div><p>${p.content}</p><button class="delete-btn" onclick="deletePost(${i})">Delete</button></div>`;
+});
+document.getElementById('posts').innerHTML = html;
+}
+
+function addPost(){
+let t = document.getElementById('title').value;
+let c = document.getElementById('content').value;
+if(t=="" || c==""){ alert("Title and Content ivvu!"); return; }
+posts.unshift({title:t, content:c, date:new Date().toLocaleDateString()});
+localStorage.setItem('myblogs', JSON.stringify(posts));
+document.getElementById('title').value="";
+document.getElementById('content').value="";
+displayPosts();
+showPage('home');
+alert("Blog Published!");
+}
+
+function deletePost(i){
+if(confirm("Delete cheyala?")){ posts.splice(i,1); localStorage.setItem('myblogs', JSON.stringify(posts)); displayPosts(); }
+}
+
+displayPosts();
+</script>
+</body>
+</html>
